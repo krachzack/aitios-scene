@@ -1,0 +1,8 @@
+[package]
+name = "aitios-scene"
+version = "0.1.0"
+authors = ["krachzack <hello@phstadler.com>"]
+
+[dependencies]
+aitios-geom = { git = "https://github.com/krachzack/aitios-geom.git" }
+tobj = "0.1.6"
