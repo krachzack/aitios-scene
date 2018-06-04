@@ -6,17 +6,17 @@ pub struct Entity {
     pub name: String,
     /// References the one material associated with this entity, more is not permitted by now.
     /// The reference is possibly shared and the contained material may not be directly mutated.
-    /// The reference itself can be set to a new material however
+    /// The reference itself can be set to a new material however.
     pub material: Rc<Material>,
     /// The geometry of the entity, represented as an indexed triangle mesh.
-    pub mesh: DeinterleavedIndexedMeshBuf
+    pub mesh: Rc<DeinterleavedIndexedMeshBuf>
     // TODO model transform if need be
 }
 
 impl Entity {
     pub fn new<S : Into<String>>(mesh: DeinterleavedIndexedMeshBuf, name: S, material: Rc<Material>) -> Self {
         Entity {
-            mesh,
+            mesh: Rc::new(mesh),
             name: name.into(),
             material
         }
