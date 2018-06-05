@@ -2,6 +2,7 @@ use mesh::DeinterleavedIndexedMeshBuf;
 use material::Material;
 use std::rc::Rc;
 
+#[derive(Clone)]
 pub struct Entity {
     pub name: String,
     /// References the one material associated with this entity, more is not permitted by now.
