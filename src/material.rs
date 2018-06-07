@@ -54,7 +54,7 @@ const EMISSIVE_MAP_KEY : &str = "map_Ps";
 /// | `metallic_map`  | `map_Pm`, Metallic           | Metallicity           |
 /// | `sheen_map`     | `map_Ps`, Sheen              | —                     |
 /// | `emissive_map`  | `map_Ke`, Emissive           | Emission              |
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Material {
     name: String,
     /// Maps strings against texture map files, where possible adhering to a subset of
@@ -279,5 +279,42 @@ impl From<Material> for MaterialBuilder {
 impl<'a> From<&'a Material> for MaterialBuilder {
     fn from(from: &'a Material) -> Self {
         MaterialBuilder { mat: from.clone() }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn equality() {
+        let mat1 = MaterialBuilder::new()
+            .name("Holodrio")
+            .diffuse_color_map("/tmp/nonexistent.png")
+            .normal_map("/tmp/temp.png")
+            .build();
+
+        let same1 = MaterialBuilder::from(&mat1).build();
+        let same2 = mat1.clone();
+
+        assert_eq!(mat1, same1);
+        assert_eq!(mat1, same2);
+
+        let other_name = MaterialBuilder::from(&mat1)
+            .name("Olodriho2")
+            .build();
+
+        let other_diffuse = MaterialBuilder::from(&mat1)
+            .diffuse_color_map("/tmp/othermap1.png")
+            .build();
+
+        let other_normal = MaterialBuilder::from(&mat1)
+            .normal_map("/tmp/othermap1_normal2.png")
+            .build();
+
+        assert_ne!(mat1, other_name);
+        assert_ne!(mat1, other_diffuse);
+        assert_ne!(mat1, other_normal);
+        assert_ne!(other_diffuse, other_normal);
     }
 }
