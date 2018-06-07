@@ -25,7 +25,7 @@ const METALLIC_MAP_KEY : &str = "map_Pm";
 const SHEEN_MAP_KEY : &str = "map_Ps";
 /// Emission map.
 /// Inofficial in MTL format, only supported by some target applications.
-const EMISSIVE_MAP_KEY : &str = "map_Ps";
+const EMISSIVE_MAP_KEY : &str = "map_Ke";
 
 /// Models the appearance of an [Entity](struct.Entity.html) using paths
 /// to texture maps.
