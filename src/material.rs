@@ -1,23 +1,89 @@
 use std::path::PathBuf;
 use std::collections::HashMap;
 
+/// Diffuse color, also known as albedo or basecolor.
 const DIFFUSE_COLOR_MAP_KEY : &str = "map_Kd";
+/// Ambient color map.
 const AMBIENT_COLOR_MAP_KEY : &str = "map_Ka";
+/// Specular color map.
 const SPECULAR_COLOR_MAP_KEY : &str = "map_Ks";
+/// Scalar bump map.
+const BUMP_MAP_KEY : &str = "bump";
+/// Scalar displacment map with midpoint at 0.5.
+const DISPLACEMENT_MAP_KEY : &str = "disp";
+/// Tangent-space normal map in any format supported by the target application.
+/// Inofficial in MTL format, only supported by some target applications.
+const NORMAL_MAP_KEY : &str = "norm";
+/// Scalar roughness map.
+/// Inofficial in MTL format, only supported by some target applications.
+const ROUGHNESS_MAP_KEY : &str = "map_Pr";
+/// Scalar metallicity map.
+/// Inofficial in MTL format, only supported by some target applications.
+const METALLIC_MAP_KEY : &str = "map_Pm";
+/// Scalar sheen map.
+/// Inofficial in MTL format, only supported by some target applications.
+const SHEEN_MAP_KEY : &str = "map_Ps";
+/// Emission map.
+/// Inofficial in MTL format, only supported by some target applications.
+const EMISSIVE_MAP_KEY : &str = "map_Ps";
 
+/// Models the appearance of an [Entity](struct.Entity.html) using paths
+/// to texture maps.
+///
+/// Where possible, the maps adhere to a subset of the
+/// [inofficial spec](http://paulbourke.net/dataformats/mtl/) for MTL files.
+///
+/// | Method Name           | Associated MTL map       | Alternative names |
+/// | --------------------- | ------------------------ | ----------------- |
+/// | `diffuse_color_map`   | `map_Kd`, Diffuse color  | Albedo, Basecolor |
+/// | `ambient_color_map`   | `map_Ka`, Ambient color  | —                 |
+/// | `specular_color_map`  | `map_Ks`, Specular color | —                 |
+/// | `bump_map`            | `bump`, Bump map         | —                 |
+/// | `displacement_map`    | `disp`, Displacement map | —                 |
+///
+/// Further, some proposed additions for physically-based rendering can be used,
+/// compatible to the map names proposed in the
+/// [Exocortex Blog](http://exocortex.com/blog/extending_wavefront_mtl_to_support_pbr),
+/// which are derived from the PBR techniques described in
+/// [Physically-based Shading At Disney](https://disney-animation.s3.amazonaws.com/library/s2012_pbs_disney_brdf_notes_v2.pdf):
+///
+/// | Method Name     | Associated MTL map           | Alternative names     |
+/// | --------------- | ---------------------------- | --------------------- |
+/// | `normal_map`    | `norm`, Tangent-space normal | —                     |
+/// | `roughness_map` | `map_Pr`, Roughness          | —                     |
+/// | `metallic_map`  | `map_Pm`, Metallic           | Metallicity           |
+/// | `sheen_map`     | `map_Ps`, Sheen              | —                     |
+/// | `emissive_map`  | `map_Ke`, Emissive           | Emission              |
 #[derive(Debug, Clone)]
 pub struct Material {
     name: String,
-    /// Maps strings against texture map files, where possible following MTL file conventions.
+    /// Maps strings against texture map files, where possible adhering to a subset of
+    /// the OBJ/MTL naming conventions.
     ///
     /// See the [inofficial spec](http://paulbourke.net/dataformats/mtl/) for more information
-    /// about MTL conventions.
+    /// about MTL conventions. The following maps are compatible with this inofficial spec:
     ///
-    /// | Key           | Associated map |
-    /// | ------------- | -------------- |
-    /// | map_Kd        | Diffuse color  |
-    /// | map_Ka        | Ambient color  |
-    /// | map_Ks        | Specular color |
+    /// | Key           | Associated OBJ map   | Alternative names |
+    /// | ------------- | -------------------- | ----------------- |
+    /// | map_Kd        | Diffuse color        | Albedo, Basecolor |
+    /// | map_Ka        | Ambient color        | —                 |
+    /// | map_Ks        | Specular color       | —                 |
+    /// | bump          | Bump map             | —                 |
+    /// | disp          | Displacement map     | —                 |
+    ///
+    /// Further, some proposed additions for physically-based rendering can be used,
+    /// compatible to the map names proposed in the
+    /// [Exocortex Blog](http://exocortex.com/blog/extending_wavefront_mtl_to_support_pbr),
+    /// which are derived from
+    /// [Physically-based Shading At Disney](https://disney-animation.s3.amazonaws.com/library/s2012_pbs_disney_brdf_notes_v2.pdf):
+    ///
+    /// | Key           | Associated OBJ map   | Alternative names |
+    /// | ------------- | -------------------- | ----------------- |
+    /// | norm          | Tangent-space normal | —                 |
+    /// | map_Pr        | Roughness            | —                 |
+    /// | map_Pm        | Metallic             | Metallicity       |
+    /// | map_Ps        | Sheen                | —                 |
+    /// | map_Ke        | Emissive             | Emission          |
     maps: HashMap<String, PathBuf>,
 }
 
@@ -26,20 +92,65 @@ impl Material {
         &self.name
     }
 
+    /// Diffuse color, also known as albedo or basecolor.
     pub fn diffuse_color_map(&self) -> Option<&PathBuf> {
         self.maps.get(&String::from(DIFFUSE_COLOR_MAP_KEY))
     }
 
+    /// Ambient color map.
     pub fn ambient_color_map(&self) -> Option<&PathBuf> {
         self.maps.get(&String::from(AMBIENT_COLOR_MAP_KEY))
     }
 
+    /// Specular color map.
     pub fn specular_color_map(&self) -> Option<&PathBuf> {
         self.maps.get(&String::from(SPECULAR_COLOR_MAP_KEY))
     }
 
-    pub fn get_map(&self, key: &String) -> Option<&PathBuf> {
-        self.maps.get(key)
+    /// Gets the scalar bump map.
+    pub fn bump_map(&self) -> Option<&PathBuf> {
+        self.maps.get(&String::from(BUMP_MAP_KEY))
+    }
+
+    /// Scalar displacment map with midpoint at 0.5.
+    pub fn displacement_map(&self) -> Option<&PathBuf> {
+        self.maps.get(&String::from(DISPLACEMENT_MAP_KEY))
+    }
+
+    /// Tangent-space normal map in any format supported by the target application.
+    /// Inofficial in MTL format, only supported by some target applications.
+    pub fn normal_map(&self) -> Option<&PathBuf> {
+        self.maps.get(&String::from(NORMAL_MAP_KEY))
+    }
+
+    /// Scalar roughness map.
+    /// Inofficial in MTL format, only supported by some target applications.
+    pub fn roughness_map(&self) -> Option<&PathBuf> {
+        self.maps.get(&String::from(ROUGHNESS_MAP_KEY))
+    }
+
+    /// Scalar metallicity map.
+    /// Inofficial in MTL format, only supported by some target applications.
+    pub fn metallic_map(&self) -> Option<&PathBuf> {
+        self.maps.get(&String::from(METALLIC_MAP_KEY))
+    }
+
+    /// Scalar sheen map.
+    /// Inofficial in MTL format, only supported by some target applications.
+    pub fn sheen_map(&self) -> Option<&PathBuf> {
+        self.maps.get(&String::from(SHEEN_MAP_KEY))
+    }
+
+    /// Emission map.
+    /// Inofficial in MTL format, only supported by some target applications.
+    pub fn emissive_map(&self) -> Option<&PathBuf> {
+        self.maps.get(&String::from(EMISSIVE_MAP_KEY))
+    }
+
+    /// Gets map names in MTL format mapped against paths.
+    /// Useful for export of MTL files.
+    pub fn maps(&self) -> &HashMap<String, PathBuf> {
+        &self.maps
     }
 }
 
@@ -87,18 +198,68 @@ impl MaterialBuilder {
         self
     }
 
+    /// Sets the diffuse color, also known as albedo or basecolor.
     pub fn diffuse_color_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
         self.mat.maps.insert(String::from(DIFFUSE_COLOR_MAP_KEY), path.into());
         self
     }
 
+    /// Sets the ambient color map.
     pub fn ambient_color_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
         self.mat.maps.insert(String::from(AMBIENT_COLOR_MAP_KEY), path.into());
         self
     }
 
+    /// Sets the specular color map.
     pub fn specular_color_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
         self.mat.maps.insert(String::from(SPECULAR_COLOR_MAP_KEY), path.into());
+        self
+    }
+
+    /// Sets the scalar bump map.
+    pub fn bump_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat.maps.insert(String::from(BUMP_MAP_KEY), path.into());
+        self
+    }
+
+    // Sets the scalar displacement map with midpoint at 0.5.
+    pub fn displacement_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat.maps.insert(String::from(DISPLACEMENT_MAP_KEY), path.into());
+        self
+    }
+
+    /// Sets the tangent-space normal map in any format supported by the target application.
+    /// Inofficial in MTL format, only supported by some target applications.
+    pub fn normal_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat.maps.insert(String::from(NORMAL_MAP_KEY), path.into());
+        self
+    }
+
+    /// Sets the scalar roughness map.
+    /// Inofficial in MTL format, only supported by some target applications.
+    pub fn roughness_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat.maps.insert(String::from(ROUGHNESS_MAP_KEY), path.into());
+        self
+    }
+
+    /// Sets the scalar metallicity map.
+    /// Inofficial in MTL format, only supported by some target applications.
+    pub fn metallic_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat.maps.insert(String::from(METALLIC_MAP_KEY), path.into());
+        self
+    }
+
+    /// Sets the scalar sheen map.
+    /// Inofficial in MTL format, only supported by some target applications.
+    pub fn sheen_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat.maps.insert(String::from(SHEEN_MAP_KEY), path.into());
+        self
+    }
+
+    /// Sets the emission map.
+    /// Inofficial in MTL format, only supported by some target applications.
+    pub fn emissive_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat.maps.insert(String::from(EMISSIVE_MAP_KEY), path.into());
         self
     }
 
