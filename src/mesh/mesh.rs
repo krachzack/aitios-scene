@@ -1,12 +1,12 @@
-use geom::{Aabb, Position, Vec3};
 use super::TriangleMeshIter;
+use geom::{Aabb, Position, Vec3};
 
 /// Implemented by types that represent triangle meshes.
 /// They must at least provide a method for iterating over vertices.
 /// Each three successive vertices are assumed to form a triangle.
 pub trait Mesh<'a> {
-    type Vertex : Position;
-    type VertexIter : Iterator<Item = Self::Vertex>;
+    type Vertex: Position;
+    type VertexIter: Iterator<Item = Self::Vertex>;
 
     fn vertices(&'a self) -> Self::VertexIter;
     fn vertex_count(&'a self) -> usize;
@@ -29,9 +29,7 @@ pub trait Mesh<'a> {
 
     fn centroid(&'a self) -> Vec3 {
         let one_over_n = (self.vertex_count() as f32).recip();
-        let vertex_sum = self.vertices()
-            .map(|v| v.position())
-            .sum::<Vec3>();
+        let vertex_sum = self.vertices().map(|v| v.position()).sum::<Vec3>();
 
         one_over_n * vertex_sum
     }
@@ -63,33 +61,15 @@ mod test {
     fn make_test_mesh() -> DeinterleavedIndexedMeshBuf {
         DeinterleavedIndexedMeshBuf {
             positions: vec![
-                1.0, 1.0, 1.0,
-                10.0, 10.0, 10.0,
-                100.0, 100.0, 100.0,
-                -1.0, -1.0, -1.0,
-                -10.0, -10.0, -10.0,
-                -100.0, -100.0, -100.0
+                1.0, 1.0, 1.0, 10.0, 10.0, 10.0, 100.0, 100.0, 100.0, -1.0, -1.0, -1.0, -10.0,
+                -10.0, -10.0, -100.0, -100.0, -100.0,
             ],
             normals: vec![
-                1.0, 0.0, 0.0,
-                1.0, 0.0, 0.0,
-                1.0, 0.0, 0.0,
-                0.0, 0.0, 1.0,
-                0.0, 0.0, 1.0,
-                0.0, 0.0, 1.0,
-            ],
-            texcoords: vec![
-                0.0, 0.0,
-                1.0, 1.0,
+                1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
                 0.0, 1.0,
-                0.7, 0.7,
-                0.7, 0.7,
-                0.7, 0.7
             ],
-            indices: vec![
-                3, 4, 5,
-                0, 1, 2
-            ]
+            texcoords: vec![0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+            indices: vec![3, 4, 5, 0, 1, 2],
         }
     }
 }

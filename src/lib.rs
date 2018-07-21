@@ -7,10 +7,10 @@
 extern crate aitios_geom as geom;
 extern crate tobj;
 
-mod mesh;
 mod entity;
 mod material;
+mod mesh;
 
-pub use mesh::*;
 pub use entity::Entity;
 pub use material::{Material, MaterialBuilder};
+pub use mesh::*;

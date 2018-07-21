@@ -1,5 +1,5 @@
-use mesh::DeinterleavedIndexedMeshBuf;
 use material::Material;
+use mesh::DeinterleavedIndexedMeshBuf;
 use std::rc::Rc;
 
 #[derive(Clone)]
@@ -10,16 +10,19 @@ pub struct Entity {
     /// The reference itself can be set to a new material however.
     pub material: Rc<Material>,
     /// The geometry of the entity, represented as an indexed triangle mesh.
-    pub mesh: Rc<DeinterleavedIndexedMeshBuf>
-    // TODO model transform if need be
+    pub mesh: Rc<DeinterleavedIndexedMeshBuf>, // TODO model transform if need be
 }
 
 impl Entity {
-    pub fn new<S : Into<String>>(mesh: DeinterleavedIndexedMeshBuf, name: S, material: Rc<Material>) -> Self {
+    pub fn new<S: Into<String>>(
+        mesh: DeinterleavedIndexedMeshBuf,
+        name: S,
+        material: Rc<Material>,
+    ) -> Self {
         Entity {
             mesh: Rc::new(mesh),
             name: name.into(),
-            material
+            material,
         }
     }
 }
@@ -58,33 +61,15 @@ mod test {
     fn make_mesh() -> DeinterleavedIndexedMeshBuf {
         DeinterleavedIndexedMeshBuf {
             positions: vec![
-                1.0, 1.0, 1.0,
-                10.0, 10.0, 10.0,
-                100.0, 100.0, 100.0,
-                -1.0, -1.0, -1.0,
-                -10.0, -10.0, -10.0,
-                -100.0, -100.0, -100.0
+                1.0, 1.0, 1.0, 10.0, 10.0, 10.0, 100.0, 100.0, 100.0, -1.0, -1.0, -1.0, -10.0,
+                -10.0, -10.0, -100.0, -100.0, -100.0,
             ],
             normals: vec![
-                1.0, 0.0, 0.0,
-                1.0, 0.0, 0.0,
-                1.0, 0.0, 0.0,
-                0.0, 0.0, 1.0,
-                0.0, 0.0, 1.0,
-                0.0, 0.0, 1.0,
-            ],
-            texcoords: vec![
-                0.0, 0.0,
-                1.0, 1.0,
+                1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
                 0.0, 1.0,
-                0.7, 0.7,
-                0.7, 0.7,
-                0.7, 0.7
             ],
-            indices: vec![
-                3, 4, 5,
-                0, 1, 2
-            ]
+            texcoords: vec![0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+            indices: vec![3, 4, 5, 0, 1, 2],
         }
     }
 }

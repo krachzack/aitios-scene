@@ -1,31 +1,31 @@
-use std::path::PathBuf;
 use std::collections::HashMap;
+use std::path::PathBuf;
 
 /// Diffuse color, also known as albedo or basecolor.
-const DIFFUSE_COLOR_MAP_KEY : &str = "map_Kd";
+const DIFFUSE_COLOR_MAP_KEY: &str = "map_Kd";
 /// Ambient color map.
-const AMBIENT_COLOR_MAP_KEY : &str = "map_Ka";
+const AMBIENT_COLOR_MAP_KEY: &str = "map_Ka";
 /// Specular color map.
-const SPECULAR_COLOR_MAP_KEY : &str = "map_Ks";
+const SPECULAR_COLOR_MAP_KEY: &str = "map_Ks";
 /// Scalar bump map.
-const BUMP_MAP_KEY : &str = "bump";
+const BUMP_MAP_KEY: &str = "bump";
 /// Scalar displacment map with midpoint at 0.5.
-const DISPLACEMENT_MAP_KEY : &str = "disp";
+const DISPLACEMENT_MAP_KEY: &str = "disp";
 /// Tangent-space normal map in any format supported by the target application.
 /// Inofficial in MTL format, only supported by some target applications.
-const NORMAL_MAP_KEY : &str = "norm";
+const NORMAL_MAP_KEY: &str = "norm";
 /// Scalar roughness map.
 /// Inofficial in MTL format, only supported by some target applications.
-const ROUGHNESS_MAP_KEY : &str = "map_Pr";
+const ROUGHNESS_MAP_KEY: &str = "map_Pr";
 /// Scalar metallicity map.
 /// Inofficial in MTL format, only supported by some target applications.
-const METALLIC_MAP_KEY : &str = "map_Pm";
+const METALLIC_MAP_KEY: &str = "map_Pm";
 /// Scalar sheen map.
 /// Inofficial in MTL format, only supported by some target applications.
-const SHEEN_MAP_KEY : &str = "map_Ps";
+const SHEEN_MAP_KEY: &str = "map_Ps";
 /// Emission map.
 /// Inofficial in MTL format, only supported by some target applications.
-const EMISSIVE_MAP_KEY : &str = "map_Ke";
+const EMISSIVE_MAP_KEY: &str = "map_Ke";
 
 /// Models the appearance of an [Entity](struct.Entity.html) using paths
 /// to texture maps.
@@ -180,7 +180,7 @@ impl Material {
 /// # assert!(new_material.specular_color_map().is_none());
 /// ```
 pub struct MaterialBuilder {
-    mat: Material
+    mat: Material,
 }
 
 impl MaterialBuilder {
@@ -188,78 +188,98 @@ impl MaterialBuilder {
         MaterialBuilder {
             mat: Material {
                 name: String::new(),
-                maps: HashMap::new()
-            }
+                maps: HashMap::new(),
+            },
         }
     }
 
-    pub fn name<S : Into<String>>(mut self, name : S) -> Self {
+    pub fn name<S: Into<String>>(mut self, name: S) -> Self {
         self.mat.name = name.into();
         self
     }
 
     /// Sets the diffuse color, also known as albedo or basecolor.
-    pub fn diffuse_color_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
-        self.mat.maps.insert(String::from(DIFFUSE_COLOR_MAP_KEY), path.into());
+    pub fn diffuse_color_map<P: Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat
+            .maps
+            .insert(String::from(DIFFUSE_COLOR_MAP_KEY), path.into());
         self
     }
 
     /// Sets the ambient color map.
-    pub fn ambient_color_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
-        self.mat.maps.insert(String::from(AMBIENT_COLOR_MAP_KEY), path.into());
+    pub fn ambient_color_map<P: Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat
+            .maps
+            .insert(String::from(AMBIENT_COLOR_MAP_KEY), path.into());
         self
     }
 
     /// Sets the specular color map.
-    pub fn specular_color_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
-        self.mat.maps.insert(String::from(SPECULAR_COLOR_MAP_KEY), path.into());
+    pub fn specular_color_map<P: Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat
+            .maps
+            .insert(String::from(SPECULAR_COLOR_MAP_KEY), path.into());
         self
     }
 
     /// Sets the scalar bump map.
-    pub fn bump_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
-        self.mat.maps.insert(String::from(BUMP_MAP_KEY), path.into());
+    pub fn bump_map<P: Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat
+            .maps
+            .insert(String::from(BUMP_MAP_KEY), path.into());
         self
     }
 
     // Sets the scalar displacement map with midpoint at 0.5.
-    pub fn displacement_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
-        self.mat.maps.insert(String::from(DISPLACEMENT_MAP_KEY), path.into());
+    pub fn displacement_map<P: Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat
+            .maps
+            .insert(String::from(DISPLACEMENT_MAP_KEY), path.into());
         self
     }
 
     /// Sets the tangent-space normal map in any format supported by the target application.
     /// Inofficial in MTL format, only supported by some target applications.
-    pub fn normal_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
-        self.mat.maps.insert(String::from(NORMAL_MAP_KEY), path.into());
+    pub fn normal_map<P: Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat
+            .maps
+            .insert(String::from(NORMAL_MAP_KEY), path.into());
         self
     }
 
     /// Sets the scalar roughness map.
     /// Inofficial in MTL format, only supported by some target applications.
-    pub fn roughness_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
-        self.mat.maps.insert(String::from(ROUGHNESS_MAP_KEY), path.into());
+    pub fn roughness_map<P: Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat
+            .maps
+            .insert(String::from(ROUGHNESS_MAP_KEY), path.into());
         self
     }
 
     /// Sets the scalar metallicity map.
     /// Inofficial in MTL format, only supported by some target applications.
-    pub fn metallic_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
-        self.mat.maps.insert(String::from(METALLIC_MAP_KEY), path.into());
+    pub fn metallic_map<P: Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat
+            .maps
+            .insert(String::from(METALLIC_MAP_KEY), path.into());
         self
     }
 
     /// Sets the scalar sheen map.
     /// Inofficial in MTL format, only supported by some target applications.
-    pub fn sheen_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
-        self.mat.maps.insert(String::from(SHEEN_MAP_KEY), path.into());
+    pub fn sheen_map<P: Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat
+            .maps
+            .insert(String::from(SHEEN_MAP_KEY), path.into());
         self
     }
 
     /// Sets the emission map.
     /// Inofficial in MTL format, only supported by some target applications.
-    pub fn emissive_map<P : Into<PathBuf>>(mut self, path: P) -> Self {
-        self.mat.maps.insert(String::from(EMISSIVE_MAP_KEY), path.into());
+    pub fn emissive_map<P: Into<PathBuf>>(mut self, path: P) -> Self {
+        self.mat
+            .maps
+            .insert(String::from(EMISSIVE_MAP_KEY), path.into());
         self
     }
 
@@ -300,9 +320,7 @@ mod test {
         assert_eq!(mat1, same1);
         assert_eq!(mat1, same2);
 
-        let other_name = MaterialBuilder::from(&mat1)
-            .name("Olodriho2")
-            .build();
+        let other_name = MaterialBuilder::from(&mat1).name("Olodriho2").build();
 
         let other_diffuse = MaterialBuilder::from(&mat1)
             .diffuse_color_map("/tmp/othermap1.png")

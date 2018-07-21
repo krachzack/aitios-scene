@@ -1,16 +1,18 @@
-use geom::{Position, TupleTriangle, FromVertices};
+use geom::{FromVertices, Position, TupleTriangle};
 
 /// Iterates over a mesh where each three consecutive vertices form a triangle
 pub struct TriangleMeshIter<V, I>
-    where V : Position,
-          I : Iterator<Item = V>
+where
+    V: Position,
+    I: Iterator<Item = V>,
 {
-    vertex_iter: I
+    vertex_iter: I,
 }
 
 impl<V, I> TriangleMeshIter<V, I>
-    where V : Position,
-          I : Iterator<Item = V>
+where
+    V: Position,
+    I: Iterator<Item = V>,
 {
     pub fn new(vertex_iter: I) -> Self {
         TriangleMeshIter { vertex_iter }
@@ -18,15 +20,18 @@ impl<V, I> TriangleMeshIter<V, I>
 }
 
 impl<V, I> Iterator for TriangleMeshIter<V, I>
-    where V : Position,
-          I : Iterator<Item = V>
+where
+    V: Position,
+    I: Iterator<Item = V>,
 {
     type Item = TupleTriangle<V>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if let (Some(v0), Some(v1), Some(v2)) =
-            (self.vertex_iter.next(), self.vertex_iter.next(), self.vertex_iter.next()) {
-
+        if let (Some(v0), Some(v1), Some(v2)) = (
+            self.vertex_iter.next(),
+            self.vertex_iter.next(),
+            self.vertex_iter.next(),
+        ) {
             Some(TupleTriangle::new(v0, v1, v2))
         } else {
             None
@@ -36,10 +41,10 @@ impl<V, I> Iterator for TriangleMeshIter<V, I>
 
 #[cfg(test)]
 mod test {
-    use super::*;
     use super::super::deinterleaved::DeinterleavedIndexedMeshBuf;
-    use geom::{Vec2, Vec3, Triangle, Position, Texcoords};
     use super::super::mesh::Mesh;
+    use super::*;
+    use geom::{Position, Texcoords, Triangle, Vec2, Vec3};
 
     #[test]
     fn test_iteration_empty_mesh() {
@@ -47,7 +52,7 @@ mod test {
             positions: vec![],
             normals: vec![],
             texcoords: vec![],
-            indices: vec![]
+            indices: vec![],
         };
         let mut iter = TriangleMeshIter::new(buf.into_iter());
 
@@ -58,33 +63,15 @@ mod test {
     fn test_iteration_normal_mesh() {
         let buf = DeinterleavedIndexedMeshBuf {
             positions: vec![
-                1.0, 1.0, 1.0,
-                10.0, 10.0, 10.0,
-                100.0, 100.0, 100.0,
-                -1.0, -1.0, -1.0,
-                -10.0, -10.0, -10.0,
-                -100.0, -100.0, -100.0
+                1.0, 1.0, 1.0, 10.0, 10.0, 10.0, 100.0, 100.0, 100.0, -1.0, -1.0, -1.0, -10.0,
+                -10.0, -10.0, -100.0, -100.0, -100.0,
             ],
             normals: vec![
-                1.0, 0.0, 0.0,
-                1.0, 0.0, 0.0,
-                1.0, 0.0, 0.0,
-                0.0, 0.0, 1.0,
-                0.0, 0.0, 1.0,
-                0.0, 0.0, 1.0,
-            ],
-            texcoords: vec![
-                0.0, 0.0,
-                1.0, 1.0,
+                1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
                 0.0, 1.0,
-                0.7, 0.7,
-                0.7, 0.7,
-                0.7, 0.7
             ],
-            indices: vec![
-                3, 4, 5,
-                0, 1, 2
-            ]
+            texcoords: vec![0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+            indices: vec![3, 4, 5, 0, 1, 2],
         };
         let mut iter = TriangleMeshIter::new((&buf).vertices());
 
@@ -101,40 +88,21 @@ mod test {
 
         assert_eq!(pos2, Vec3::new(100.0, 100.0, 100.0));
         assert_eq!(tex1, Vec2::new(1.0, 1.0));
-
     }
 
     #[test]
     fn test_iteration_non_full_vtx_at_end_mesh() {
         let buf = DeinterleavedIndexedMeshBuf {
             positions: vec![
-                1.0, 1.0, 1.0,
-                10.0, 10.0, 10.0,
-                100.0, 100.0, 100.0,
-                -1.0, -1.0, -1.0,
-                -10.0, -10.0, -10.0,
-                -100.0, -100.0, -100.0
+                1.0, 1.0, 1.0, 10.0, 10.0, 10.0, 100.0, 100.0, 100.0, -1.0, -1.0, -1.0, -10.0,
+                -10.0, -10.0, -100.0, -100.0, -100.0,
             ],
             normals: vec![
-                1.0, 0.0, 0.0,
-                1.0, 0.0, 0.0,
-                1.0, 0.0, 0.0,
-                0.0, 0.0, 1.0,
-                0.0, 0.0, 1.0,
-                0.0, 0.0, 1.0,
-            ],
-            texcoords: vec![
-                0.0, 0.0,
-                1.0, 1.0,
+                1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
                 0.0, 1.0,
-                0.7, 0.7,
-                0.7, 0.7,
-                0.7, 0.7
             ],
-            indices: vec![
-                3, 4, 5,
-                0, 1,
-            ]
+            texcoords: vec![0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+            indices: vec![3, 4, 5, 0, 1],
         };
         let mut iter = TriangleMeshIter::new(buf.into_iter());
 
@@ -147,4 +115,3 @@ mod test {
         assert!(iter.next().is_none());
     }
 }
-
