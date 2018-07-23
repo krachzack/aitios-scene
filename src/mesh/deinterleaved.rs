@@ -1,5 +1,6 @@
 use super::mesh::Mesh;
 use geom::{Normal, Position, Texcoords, Vec2, Vec3, Vertex};
+use std::default::Default;
 use std::iter::FromIterator;
 
 /// An indexed triangle mesh with de-interleaved vertices, i.e.
@@ -102,6 +103,17 @@ impl DeinterleavedIndexedMeshBuf {
             position: Vec3::new(position[0], position[1], position[2]),
             normal: Vec3::new(normal[0], normal[1], normal[2]),
             texcoords: Vec2::new(texcoords[0], texcoords[1]),
+        }
+    }
+}
+
+impl Default for DeinterleavedIndexedMeshBuf {
+    fn default() -> Self {
+        Self {
+            positions: vec![],
+            normals: vec![],
+            texcoords: vec![],
+            indices: vec![],
         }
     }
 }
